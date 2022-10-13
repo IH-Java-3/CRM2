@@ -4,14 +4,22 @@ import javax.persistence.*;
 
 @Entity
 public class Contacts extends Leads{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @ManyToOne
+    Accounts account;
+
+    public Accounts getAccount() {
+        return account;
+    }
+
+    public void setAccount(Accounts account) {
+        this.account = account;
+    }
 
     public Contacts() {
     }
 
-    public Contacts(String name, String phoneNumber, String email, String companyName, Long salesRepId) {
+    public Contacts(String name, String phoneNumber, String email, String companyName, SalesRep salesRepId, Accounts account) {
         super(name, phoneNumber, email, companyName, salesRepId);
+        this.account = account;
     }
 }

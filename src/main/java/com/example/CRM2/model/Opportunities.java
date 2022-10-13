@@ -7,27 +7,50 @@ public class Opportunities {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Opportunities_product product;
+    private OpportunitiesProduct product;
     private int quantity;
-    private Long decisionMaker; //este seria el contact id
-    private Opportunities_Status status;
-    /*
-    @OneToOne
-    @JoinColumn(name = "decision_maker_id")
-    private Leads decisionMaker;
+    @ManyToOne
+    @JoinColumn(name = "decisionMaker_id")
+    private Contacts decisionMaker;
+    private OpportunitiesStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "sales_rep_id")
-    private SalesRep salesRep;
-*/
+    @JoinColumn(name = "account_id")
+    private Accounts account;
+
+    public Accounts getAccount() {
+        return account;
+    }
+
+    public void setAccount(Accounts account) {
+        this.account = account;
+    }
 
     public Opportunities() {
     }
 
-    public Opportunities(Opportunities_product product, int quantity, Long decisionMaker, Opportunities_Status status) {
+    public Opportunities(OpportunitiesProduct product, int quantity, Contacts decisionMaker, OpportunitiesStatus status, Accounts account) {
         this.product = product;
         this.quantity = quantity;
         this.decisionMaker = decisionMaker;
         this.status = status;
+        this.account = account;
+    }
+
+    public Contacts getDecisionMaker() {
+        return decisionMaker;
+    }
+
+    public void setDecisionMaker(Contacts decisionMaker) {
+        this.decisionMaker = decisionMaker;
+    }
+
+    @Override
+    public String toString() {
+        return "\nId: " + id +
+                "\nProduct: " + product +
+                "\nQuantity: " + quantity +
+                "\nDecisionMaker: " + decisionMaker +
+                "\nStatus: " + status;
     }
 }

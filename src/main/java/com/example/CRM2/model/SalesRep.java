@@ -16,13 +16,10 @@ public class SalesRep {
     private Long id;
     private String name;
 
-    /*
-    @OneToMany
-    @JoinColumn(name = "lead_id")
+    @OneToMany(mappedBy = "salesRepId")
+    //@JoinColumn(name = "lead_id")
     private List<Leads> salesRepList = new ArrayList<>();
 
-
-     */
     public SalesRep() {
     }
 
@@ -48,6 +45,6 @@ public class SalesRep {
 
     @Override
     public String toString() {
-        return "\nId: " + id + "\nName: " + name;
+        return "\nId: " + id + " Name: " + name;
     }
 }
