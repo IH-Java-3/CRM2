@@ -33,4 +33,14 @@ public class Accounts {
         //this.contactList = contactList;
         //this.opportunityList = opportunityList;
     }
+
+    @Override
+    public String toString() {
+        return "Accounts{" +
+                "\nId: " + id +
+                "\nAccount Industry: " + accountIndustry +
+                "\nEmployee Count: " + employeeCount +
+                "\nCity: " + city  +
+                "\nCountry: " + country;
+    }
 }

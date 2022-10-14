@@ -21,4 +21,8 @@ public interface AccountsRepository extends JpaRepository<Accounts, Long> {
     List<ArrayList<String>> employeeMax();
     @Query("select min(employeeCount) from Accounts")
     List<ArrayList<String>> employeeMin();
+    @Query(value = "with V as (select *, count(*) over () as a, row_number() over (order by employee_count) as RN from Accounts) select avg(employee_count) from V where RN in (floor((a+1)/2), floor((a+2)/2))", nativeQuery = true)
+    List<ArrayList<String>> employeeMedian();
+
+    //with V as (select *, count(*) over () as a, row_number() over (order by employeeCount) as RN from Accounts) select avg(employeeCount) from V where RN in (floor((a+1)/2), floor((a+2)/2));
 }

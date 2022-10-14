@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 
-import java.time.LocalDate;
 import java.util.*;
 
 import static com.example.CRM2.model.OpportunitiesProduct.*;
@@ -49,7 +48,6 @@ public class Crm2Application implements CommandLineRunner {
                 new SalesRep("Cinta"),
                 new SalesRep("Oxana")
         ));
-        //Leads(String name, String phoneNumber, String email, String companyName, SalesRep salesRepId) {
         leadsRepository.saveAll(List.of(
                 new Leads("saddgs","555666222","nada1@nada.com","pepinos ltd", salesRepRepository.findById(1L).get()),
                 new Leads("khjgds","755666222","nada2@nada.com","papa ltd", salesRepRepository.findById(3L).get()),
@@ -173,8 +171,6 @@ public class Crm2Application implements CommandLineRunner {
             sn.next();
         }
     }
-
-
 
     private void countLeadBySalesRep() {
         System.out.println("\nLeads by SalesRep");
@@ -315,9 +311,9 @@ public class Crm2Application implements CommandLineRunner {
 
     private void employeeMedian() {
         System.out.println("\nMedian Employee Count");
-//        for (List c:accountsRepository.employeeMedian()) {
-//            System.out.println(c);
-//        }
+        for (List c:accountsRepository.employeeMedian()) {
+            System.out.println(c);
+        }
     }
 
     private void employeeMax() {
@@ -342,6 +338,10 @@ public class Crm2Application implements CommandLineRunner {
     }
 
     private void productsOrderMedian() {
+        System.out.println("\nMedian Products Order");
+        for (List c:opportunitiesRepository.productsMedian()) {
+            System.out.println(c);
+        }
     }
 
     private void productsOrderMax() {
@@ -350,37 +350,45 @@ public class Crm2Application implements CommandLineRunner {
             System.out.println(c);
         }
     }
-
     private void productsOrderMin() {
         System.out.println("\nMin Products Order");
         for (List c:opportunitiesRepository.productsMin()) {
             System.out.println(c);
         }
     }
-
     private void opportunitiesAccountMean() {
         System.out.println("\nMean Opportunities Account");
         for (List c:opportunitiesRepository.opportunitiesMean()) {
             System.out.println(c);
         }
     }
-
     private void opportunitiesAccountMedian() {
+        System.out.println("\nMedian Opportunities Account");
+        for (List c:opportunitiesRepository.opportunitiesMedian()) {
+            System.out.println(c);
+        }
     }
 
     private void opportunitiesAccountMax() {
-    }
+        System.out.println("\nMax Opportunities Account");
+        for (List c:opportunitiesRepository.opportunitiesMax()) {
+            System.out.println(c);
+        }
 
+    }
     private void opportunitiesAccountMin() {
-    }
+        System.out.println("\nMinOpportunities Account");
+        for (List c:opportunitiesRepository.opportunitiesMin()) {
+            System.out.println(c);
+        }
 
+    }
 
     private void showContacts() {
         System.out.println("\u001B[32m" + "\nContacts\n" + contactsRepository.findAll(Sort.by("id")) + "\u001B[0m");
     }
 
     private void showLeads() {
-        //System.out.println(leadsRepository.findAll(Sort.by("id")));
         System.out.println("\u001B[32m" + "\nLeads\n" + leadsRepository.findAll(Sort.by("id")) + "\u001B[0m");
     }
 
@@ -390,10 +398,6 @@ public class Crm2Application implements CommandLineRunner {
     private Opportunities convertLeadtoOpportunity() {
         Opportunities opportunities = null;
         if (leadsRepository.count() > 0) {
-            //createLead();
-            //leadsRepRepository.save(createLead());
-
-            /********************************************/
             Long idLead;
             //opportunities = null;
             int quantity, product = 0;
@@ -405,21 +409,13 @@ public class Crm2Application implements CommandLineRunner {
             boolean salir3 = false;
             System.out.println("\u001B[32m" + "\nLeads\n" + leadsRepository.findAll(Sort.by("id")) + "\u001B[0m");
             System.out.print("\nPlease enter the Lead id: ");
-            idLead = Long.valueOf(sn.nextInt());                // <--?????????????
+            idLead = Long.valueOf(sn.nextInt());
             try {
                 Contacts contact = null;
                 Leads lead = null;
                 if (leadsRepository.existsById((long) idLead)) {
-                    //hay otra manera más elegante?
-                    //contact = (Contacts) leadsRepository.getReferenceById(idLead);
-                    //super(name, phoneNumber, email, companyName, salesRepId);
                     Leads leads = leadsRepository.findById(idLead).get();
                     contact = new Contacts(leads.getName(),leads.getPhoneNumber(),leads.getEmail(),leads.getCompanyName(),leads.getSalesRepId(),null);
-                    //contact = new Contacts(leadsRepository.findById(idLead).get().getName(), leadsRepository.findById(idLead).get().getPhoneNumber(), leadsRepository.findById(idLead).get().getEmail(), leadsRepository.findById(idLead).get().getCompanyName(), leadsRepository.findById(idLead).get().getSalesRepId());
-                    //contact = new Contacts(leadsRepository.findById(idLead).get());
-                    //contact = (Contacts) leadsRepository.findById(idLead).get();
-                    //lead = leadsRepository.findById(idLead).get();
-                    //contactsRepository.save(contact);
                     leadsRepository.delete(leadsRepository.getReferenceById(idLead));
                 }
                 while (!salir3) {
@@ -444,7 +440,7 @@ public class Crm2Application implements CommandLineRunner {
                 System.out.print("Please enter the quantity: ");
                 quantity = Integer.parseInt(sn.next());
                 opportunities = new Opportunities(product_type, quantity, contact, OpportunitiesStatus.OPEN,null);
-                System.out.println("accountsRepository.count() " + accountsRepository.count());
+                //System.out.println("accountsRepository.count() " + accountsRepository.count());
                 if (accountsRepository.count() < 1) {
                     //createAccount(contact,opportunities);
                     System.out.print("Please enter the number of employees: ");
@@ -462,8 +458,8 @@ public class Crm2Application implements CommandLineRunner {
                     boolean exit4 = true;
                     while (exit4) {
                         System.out.print("Would you like to create a new Account? (Y/N) ");
-                        String newAccount = sn.nextLine();
-                        if (newAccount.toUpperCase() == "Y") {
+                        String newAccount = sn.next();
+                        if (newAccount.toUpperCase().equals("Y")) {
                             //createAccount(contact,opportunities);
                             System.out.print("Please enter the number of employees: ");
                             employeeCount = Integer.parseInt(sn.next());
@@ -477,9 +473,16 @@ public class Crm2Application implements CommandLineRunner {
                             opportunities.setAccount(accounts);
                             contactsRepository.save(contact);
                             exit4=false;
-                        } else if (newAccount.toUpperCase() == "N") {
-
-
+                        } else if (newAccount.toUpperCase().equals("N")) {
+                            System.out.println("\u001B[36m" + "\nAccounts\n" + accountsRepository.findAll(Sort.by("id")) + "\u001B[0m");
+                            System.out.print("\nPlease enter the Account id: ");
+                            Long idAccount = Long.valueOf(sn.nextInt());
+                            Accounts accounts  = accountsRepository.findById(idAccount).orElseThrow(IndexOutOfBoundsException::new);
+                            accountsRepository.save(accounts);
+                            contact.setAccount(accounts);
+                            opportunities.setAccount(accounts);
+                            contactsRepository.save(contact);
+                            exit4=false;
                         } else {
                             System.out.println("You must select Y/N");
                         }
@@ -492,7 +495,6 @@ public class Crm2Application implements CommandLineRunner {
                         El id está fuera de rango o no existe
                         \u001B[0m""");
             }
-            /******************************************/
         } else {
             System.out.println("\nDebes crear primero un lead");
         }
@@ -500,9 +502,6 @@ public class Crm2Application implements CommandLineRunner {
     }
 
     private void createAccount(Contacts contact, Opportunities opportunities) {
-        //industry - an Enum with options PRODUCE, ECOMMERCE, MANUFACTURING, MEDICAL, OTHER
-        //*****************************************
-        //***************************************** HACERLO
         int employeeCount;
         String city;
         String country;
@@ -520,14 +519,11 @@ public class Crm2Application implements CommandLineRunner {
     private void showOpportunities() {
         System.out.println("\u001B[34m" + "\nOpportunities\n" + opportunitiesRepository.findAll(Sort.by("id")) + "\u001B[0m");
     }
-
     private void updateOpportunity() {
     }
-
     private void showAccounts() {
         System.out.println("\u001B[36m" + "\nAccounts\n" + accountsRepository.findAll(Sort.by("id")) + "\u001B[0m");
     }
-
     private void showSalesRep() {
         System.out.println("\u001B[35m" + "\nSales Reps\n" + salesRepRepository.findAll(Sort.by("id")) + "\u001B[0m");
     }
@@ -565,69 +561,4 @@ public class Crm2Application implements CommandLineRunner {
         }
         return new Leads(name, phone, email, company, salesRep);
     }
-
 }
-
-/*
-
-        System.out.println("11. Report Lead by SalesRep");
-        System.out.println("12. Report Opportunity by SalesRep");
-        System.out.println("13. Report CLOSED-WON by SalesRep");
-        System.out.println("14. Report CLOSED-LOST by SalesRep");
-        System.out.println("15. Report OPEN by SalesRep");
-        System.out.println("16. Report Opportunity by the product");
-        System.out.println("17. Report CLOSED-WON by the product");
-        System.out.println("18. Report CLOSED-LOST by the product");
-        System.out.println("19. Report OPEN by the product");
-        System.out.println("20. Report Opportunity by Country");
-        System.out.println("21. Report CLOSED-WON by Country");
-        System.out.println("22. Report CLOSED-LOST by Country");
-        System.out.println("23. Report OPEN by Country");
-        System.out.println("24. Report Opportunity by City");
-        System.out.println("25. Report CLOSED-WON by City");
-        System.out.println("26. Report CLOSED-LOST by City");
-        System.out.println("27. Report OPEN by City");
-        System.out.println("28. Report Opportunity by Industry");
-        System.out.println("29. Report CLOSED-WON by Industry");
-        System.out.println("30. Report CLOSED-LOST by Industry");
-        System.out.println("31. Report OPEN by Industry");
-        System.out.println("32. Mean EmployeeCount");
-        System.out.println("33. Median EmployeeCount");
-        System.out.println("34. Max EmployeeCount");
-        System.out.println("35. Min EmployeeCount");
-        System.out.println("36. Mean Quantity");
-        System.out.println("37. Median Quantity");
-        System.out.println("38. Max Quantity");
-        System.out.println("39. Min Quantity");
-        System.out.println("40. Mean Opps per Account");
-        System.out.println("41. Median Opps per Account");
-        System.out.println("42. Max Opps per Account");
-        System.out.println("43. Min Opps per Account");
- */
-
-/*
-        System.out.println("\u001B[35m" + "\n                                   Reports by SalesRep" + "\u001B[0m");
-        System.out.println("11. Leads           12. Opportunities   13. CLOSED-WON      14. CLOSED-LOST     15. OPEN");
-
-        System.out.println("\u001B[35m" + "\n                                   Reports by Product" + "\u001B[0m");
-        System.out.println("16. Opportunities   17. CLOSED-WON      18. CLOSED-LOST     19. OPEN");
-
-        System.out.println("\u001B[35m" + "\n                                   Reports by Country" + "\u001B[0m");
-        System.out.println("20. Opportunities   21. CLOSED-WON      22. CLOSED-LOST     23. OPEN");
-
-        System.out.println("\u001B[35m" + "\n                                   Reports by City" + "\u001B[0m");
-        System.out.println("24. Opportunities   25. CLOSED-WON      26. CLOSED-LOST     27. OPEN");
-
-        System.out.println("\u001B[35m" + "\n                                   Reports by Industry" + "\u001B[0m");
-        System.out.println("28. Opportunities   29. CLOSED-WON      30. CLOSED-LOST     31. OPEN");
-
-        System.out.println("\u001B[35m" + "\n                                   Reports of Employee Count" + "\u001B[0m");
-        System.out.println("32. Mean           33. MEDIAN           34. MAX              35. MIN");
-
-        System.out.println("\u001B[35m" + "\n                                   Reports of Quantity" + "\u001B[0m");
-        System.out.println("36. Mean           37. MEDIAN           38. MAX              39. MIN");
-
-        System.out.println("\u001B[35m" + "\n                                   Reports of Opps per Account" + "\u001B[0m");
-        System.out.println("40. Mean           41. MEDIAN           42. MAX              43. MIN");
-
- */

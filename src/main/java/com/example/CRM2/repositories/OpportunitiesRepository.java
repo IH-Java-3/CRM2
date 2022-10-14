@@ -58,20 +58,26 @@ public interface OpportunitiesRepository extends JpaRepository<Opportunities, Lo
     @Query("select avg(quantity) from Opportunities")
     List<ArrayList<String>> productsMean();
 
-    @Query("select account, count(account) FROM Opportunities group by account order by account ASC")
-            //" limit 1")
+    @Query(value = "with V as (select *, count(*) over () as a, row_number() over (order by product) as RN from Opportunities) select avg(product) from V where RN in (floor((a+1)/2), floor((a+2)/2))", nativeQuery = true)
+    List<ArrayList<String>> productsMedian();
+
+    @Query(value = "SELECT account_id, count(product) FROM opportunities group by account_id order by product ASC limit 1", nativeQuery = true)
     List<ArrayList<String>> productsMax();
-    @Query("select account, count(account) FROM Opportunities group by account order by account DESC")
-            //" limit 1")
+    @Query(value = "SELECT account_id, count(product) FROM opportunities group by account_id order by product DESC limit 1", nativeQuery = true)
     List<ArrayList<String>> productsMin();
 
 
     @Query("select avg(account) from Opportunities")
     List<ArrayList<String>> opportunitiesMean();
 
+    @Query(value = "with V as (select *, count(*) over () as a, row_number() over (order by account_id) as RN from Opportunities) select avg(account_id) from V where RN in (floor((a+1)/2), floor((a+2)/2))", nativeQuery = true)
+    List<ArrayList<String>> opportunitiesMedian();
 
+    @Query(value = "SELECT account_id, count(account_id) FROM opportunities group by account_id order by account_id ASC limit 1", nativeQuery = true)
+    List<ArrayList<String>> opportunitiesMax();
 
-
+    @Query(value = "SELECT account_id, count(account_id) FROM opportunities group by account_id order by account_id DESC limit 1", nativeQuery = true)
+    List<ArrayList<String>> opportunitiesMin();
 }
 
 //SELECT account_id, count(account_id) FROM `opportunities` group by account_id order by account_id ASC limit 1
@@ -79,5 +85,4 @@ public interface OpportunitiesRepository extends JpaRepository<Opportunities, Lo
 //select rp.name, count(*) from Opportunities l, Sales_Rep rp, contacts c where rp.id = c.sales_rep_id_id  AND l.status = 1;
 //@Query("select rp.name, count(l) from Opportunities l, SalesRep rp where rp.id = l.decisionMaker group by l.decisionMaker")
 //select product, count(*) from Opportunities group by product
-
 //select count(*), country from opportunities l, accounts ac where ac.id = l.account_id GROUP by country
